@@ -13,6 +13,8 @@ import Home from "./Home.tsx";
 import List from "./List.tsx";
 import Gallery from "./Gallery.tsx";
 
+import fetchPlaylistData from "./utils/fetchplaylist.ts";
+
 function App()
 {
   return (

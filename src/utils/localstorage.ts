@@ -22,7 +22,7 @@ function setCachedData<T> (key : string, data : T, lifetime : number) : void
   }
   catch (error)
   {
-    console.error("Failed to write to localStorage", error);
+    console.error("Failed to write to localStorage ", error);
   }
 }
 
