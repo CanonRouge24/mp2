@@ -13,6 +13,8 @@ import {
 
 import { setCachedData, getCachedData } from "./localstorage.ts";
 
+import { notes, updateNotes } from "../assets/notes.ts";
+
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY,
 
       CACHE_KEY = "cr24_playlist",
@@ -39,12 +41,14 @@ async function fetchPlaylistData () : Video[]
   {
     console.log(`Using cached data that expires at ${(new Date(cached.expiry)).toString()}!`);
 
+    updateNotes();
+
     return cached;
   }
 
   // Get from API
   console.log("Fetching fresh data from API...");
-  const videos : Video[] = [];
+  const videos = new Map<string, Video>();
 
   // Get videos from all playlists
   for (const ID of PLAYLIST_IDS)
@@ -70,9 +74,33 @@ async function fetchPlaylistData () : Video[]
         // Copy `published` and `viewCount` data for each video
         augmentVideoStatistics(items, videoResponse);
 
-        // Add to final items
-        videos.concat(items);
+        // If any videos are already present in videos, then pick the older of the two based on `added`
+        for (const video of items)
+        {
+          const { videoId } = video;
 
+          // Assume video is new, and index should be at the end
+          video.index = videos.size();
+
+          // If video is present and newer, skip
+          if (videos.has(videoId))
+          {
+            const previous = videos.get(videoId);
+
+            if (video.added >= previous.added)
+            {
+              continue;
+            }
+
+            // Else, replace index with previous one
+            video.index = previous.index;
+          }
+
+          // Else, replace/add to videos
+          videos.set(videoId, video);
+        }
+
+        // Update `playlistURL` with `nextPageToken`.
         playlistURL = PLAYLIST_BASE_URL + `&pageToken=${playlistResponse.nextPageToken}`;
       }
       catch (error)
@@ -82,7 +110,16 @@ async function fetchPlaylistData () : Video[]
     } while (playlistResponse.nextPageToken !== undefined);
   }
 
-  setCachedData<Video[]>(CACHE_KEY, videos, CACHE_LIFETIME);
+  // Convert to array, sorted by index
+  const videoArray = [...videos.values()].sort(
+    (a, b) => a.index - b.index
+  );
+
+  // Update notes if present
+  updateNotes(videoArray);
+
+  // Save to localStorage
+  setCachedData<Video[]>(CACHE_KEY, videoArray, CACHE_LIFETIME);
 
   return videos;
 }

@@ -86,6 +86,8 @@ interface Video
 
   channelId : string;    // Id of uploading channel
   channelTitle : string; // Name of uploading channel
+
+  note? : string;
 }
 
 
