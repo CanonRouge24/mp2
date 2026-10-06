@@ -38,15 +38,17 @@ function NavbarLink ({ text, isActive })
 }
 
 
-export default function Navbar ()
+export default function Navbar ({ setSearchString })
 {
   return (
-    <Box sx={{ flexGrow : 1 }}>
+    <Box>
       <AppBar sx={{ position : "sticky" }}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, pr: "1rem", textAlign: { xs: "center", md: "left" } }}>
-            CanonRouge24's Playlist Viewer
-          </Typography>
+          <NavLink to="/">
+            <Button key="CanonRouge24's Playlist Viewer" variant="text" sx={{ flexGrow: 1, mr: "1rem", fontSize: "1rem", textAlign: { xs: "center", md: "left" }, color: "white" }}>
+              CanonRouge24's Playlist Viewer
+            </Button>
+          </NavLink>
 
           <TextField
             hiddenLabel
@@ -81,6 +83,11 @@ export default function Navbar ()
                   opacity: 0.7
                 }
               })
+            }
+            onChange={
+              (event : React.ChangeEvent<HTMLInputElement>) => {
+                setSearchString(event.target.value);
+              }
             }
             variant="filled"
           />
