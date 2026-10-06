@@ -7,8 +7,9 @@ import type {
   VideoRawItem
 } from "./videos.ts";
 import {
+  augmentVideoStatistics,
   convertPlaylistItemToVideo,
-  augmentVideoStatistics
+  isUnavailable
 } from "./videos.ts";
 
 import { setCachedData, getCachedData } from "./localstorage.ts";
@@ -32,6 +33,25 @@ const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY,
       BATCH_VIDEO_BASE_URL = BASE_URL + `videos?part=snippet&part=statistics&key=${API_KEY}`;
 
 
+let pending : Promise<Video[]> | null = null;
+
+function loadPlaylistData () : Promise<Video>
+{
+  if (pending !== null)
+  {
+    return pending;
+  }
+
+  // Else
+  // Instantiate single pending instance
+  pending = fetchPlaylistData().finally(
+    // Clean up after playlist fetched
+    () => pending = null
+  );
+
+  return pending;
+}
+
 async function fetchPlaylistData () : Video[]
 {
   // Check if in cache
@@ -39,9 +59,9 @@ async function fetchPlaylistData () : Video[]
 
   if (cached)
   {
-    console.log(`Using cached data that expires at ${(new Date(cached.expiry)).toString()}!`);
+    console.log(`Using cached data`);
 
-    updateNotes();
+    updateNotes(cached);
 
     return cached;
   }
@@ -53,60 +73,64 @@ async function fetchPlaylistData () : Video[]
   // Get videos from all playlists
   for (const ID of PLAYLIST_IDS)
   {
+    const PLAYLIST_ID_URL = PLAYLIST_BASE_URL + `&playlistId=${ID}`;
+
     let playlistResponse : PlaylistItemsResponse = null,
-        playlistURL = PLAYLIST_BASE_URL + `&playlistId=${ID}`;
+        playlistURL = PLAYLIST_ID_URL;
 
     do
     {
-      try
+      ({ data : playlistResponse } = await axios.get<PlaylistItemsResponse>(playlistURL));
+
+      const items : Video[] = playlistResponse.items.map(convertPlaylistItemToVideo),
+
+            // Extract the individual video ids and create the batch call URL
+            idQueryParameters = items.map(
+              video => `&id=${video.videoId}`
+            ).join``,
+
+            videoURL = BATCH_VIDEO_BASE_URL + idQueryParameters,
+            { data : videoResponse } = await axios.get<VideoItemsResponse>(videoURL);
+
+      // Copy `published` and `viewCount` data for each video
+      augmentVideoStatistics(items, videoResponse);
+
+      /* If any videos are already present in videos, then pick the older of the two based on `added`
+       * Or if video is privated or removed (I'll use the channelId being undefined), then simply skip it
+       */
+      for (const video of items)
       {
-        playlistResponse = await axios.get<PlaylistItemsResponse>(playlistURL);
-        const items : Video[] = playlistResponse.data.items.map(convertPlaylistItemToVideo),
-
-              // Extract the individual video ids and create the batch call URL
-              idQueryParameters = items.map(
-                video => `&id=${video.videoId}`
-              ).join``,
-
-              videoURL = BATCH_VIDEO_BASE_URL + idQueryParameters,
-              videoResponse = await axois.get<VideoItemsResponse>(videoURL);
-
-        // Copy `published` and `viewCount` data for each video
-        augmentVideoStatistics(items, videoResponse);
-
-        // If any videos are already present in videos, then pick the older of the two based on `added`
-        for (const video of items)
+        // Skip privated or removed videos
+        if (isUnavailable(video))
         {
-          const { videoId } = video;
-
-          // Assume video is new, and index should be at the end
-          video.index = videos.size();
-
-          // If video is present and newer, skip
-          if (videos.has(videoId))
-          {
-            const previous = videos.get(videoId);
-
-            if (video.added >= previous.added)
-            {
-              continue;
-            }
-
-            // Else, replace index with previous one
-            video.index = previous.index;
-          }
-
-          // Else, replace/add to videos
-          videos.set(videoId, video);
+          continue;
         }
 
-        // Update `playlistURL` with `nextPageToken`.
-        playlistURL = PLAYLIST_BASE_URL + `&pageToken=${playlistResponse.nextPageToken}`;
+        const { videoId } = video;
+
+        // Assume video is new, and index should be at the end
+        video.index = videos.size;
+
+        // If video is present and newer, skip
+        if (videos.has(videoId))
+        {
+          const previous = videos.get(videoId);
+
+          if (video.added >= previous.added)
+          {
+            continue;
+          }
+
+          // Else, replace index with previous one
+          video.index = previous.index;
+        }
+
+        // Else, replace/add to videos
+        videos.set(videoId, video);
       }
-      catch (error)
-      {
-        console.error("Couldn't get response ", error);
-      }
+
+      // Update `playlistURL` with `nextPageToken`.
+      playlistURL = PLAYLIST_ID_URL + `&pageToken=${playlistResponse.nextPageToken}`;
     } while (playlistResponse.nextPageToken !== undefined);
   }
 
@@ -115,13 +139,22 @@ async function fetchPlaylistData () : Video[]
     (a, b) => a.index - b.index
   );
 
+  videoArray.forEach(
+    (video, index) =>
+    {
+      video.index = index;
+    }
+  );
+
   // Update notes if present
   updateNotes(videoArray);
 
   // Save to localStorage
   setCachedData<Video[]>(CACHE_KEY, videoArray, CACHE_LIFETIME);
 
+  console.log("Fetched!");
+
   return videos;
 }
 
-export default fetchPlaylistData;
+export default loadPlaylistData;

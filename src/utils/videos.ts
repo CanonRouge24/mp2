@@ -21,6 +21,12 @@ interface PlaylistRawItem
         height : number;
       };
 
+      standard : {
+        url : string;
+        width : number;
+        height : number;
+      };
+
       maxres : {
         url : string;
         width : number;
@@ -63,7 +69,7 @@ interface Video
   videoId : string;      // watch?v={videoId}
   title : string;        // video title
 
-  thumbnail : {          // Links to two different sizes of the thumbnail
+  thumbnails : {          // Links to two different sizes of the thumbnail
     list : {
       link : string;
       width : number;
@@ -99,7 +105,9 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
 
     thumbnails : {
       medium : list,
-      maxres : gallery
+      maxres : gallery,
+      standard : backup,
+      high : backup2
     },
 
     publishedAt : added,
@@ -112,8 +120,20 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
 
   added = new Date(added);
 
+  if (title !== "Private video" && title !== "Deleted video")
+  {
+    list.link = list.url;
+    delete list.url;
+
+    gallery = (gallery !== undefined) ? gallery : backup;
+    gallery = (gallery !== undefined) ? gallery : backup2;
+
+    gallery.link = gallery.url;
+    delete gallery.url;
+  }
+
   return {
-    resourceId,
+    videoId,
     title,
 
     thumbnails : {
@@ -128,6 +148,11 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
     channelId,
     channelTitle
   };
+}
+
+function isUnavailable (video : Video) : boolean
+{
+  return video.channelId === undefined;
 }
 
 function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse)
@@ -149,11 +174,14 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
 
         published = new Date(published);
 
-        return {
+        return [
           videoId,
-          published,
-          viewCount
-        };
+          {
+            videoId,
+            published,
+            viewCount
+          }
+        ];
       }
     )
   );
@@ -162,11 +190,19 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
   {
     const responseItem = map.get(video.videoId);
 
+    // Missing video
+    if (isUnavailable(video))
+    {
+      continue;
+    }
+
+    // Else
     // Copy `published` and `viewCount` into `video`
     (
       {
         published : video.published,
         viewCount : video.viewCount
+
       } = responseItem
     );
   }
@@ -174,4 +210,4 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
 
 
 export type { PlaylistItemsResponse, Video, VideoItemsResponse };
-export { convertPlaylistItemToVideo, augmentVideoStatistics };
+export { convertPlaylistItemToVideo, augmentVideoStatistics, isUnavailable };
