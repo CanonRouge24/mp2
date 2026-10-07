@@ -59,7 +59,11 @@ export default function VideoPage ({ videos } : VideoProps)
   );
 }
 
-function VideoEmbed ({ videos } : VideoProps)
+interface VideoEmbedProps {
+  video: Video;
+}
+
+function VideoEmbed ({ video } : VideoEmbedProps)
 {
   return (
     <iframe

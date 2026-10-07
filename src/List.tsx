@@ -16,16 +16,7 @@ import type { Video } from "./utils/videos.ts";
 
 
 const ignore = "getApplyQuickFilterFn",
-      ignoreFn = () => null,
-
-      dateFormatter = (date) =>
-      {
-        const month = (date.getMonth() + 1).toString().padStart(2, "0"),
-              day = date.getDate().padStart(2, "0"),
-              year = date.getFullYear();
-
-        return `${month}/${day}/${year}`;
-      };
+      ignoreFn = () => null;
 
 const COLUMNS : GridColDef[] = [
   {
