@@ -27,6 +27,12 @@ interface PlaylistRawItem
         height : number;
       };
 
+      high : {
+        url : string;
+        width : number;
+        height : number;
+      };
+
       maxres : {
         url : string;
         width : number;
@@ -108,10 +114,10 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
     title,
 
     thumbnails : {
-      medium : list,     // 320x180
-      maxres : gallery,  // 1280x720
-      standard : backup, // 640x480
-      high : backup2     // 480x360
+      medium,   // 320x180
+      maxres,   // 1280x720
+      standard, // 640x480
+      high      // 480x360
     },
 
     publishedAt : added,
@@ -122,25 +128,25 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
     videoOwnerChannelTitle : channelTitle
   } = item.snippet;
 
-  if (title !== "Private video" && title !== "Deleted video")
-  {
-    list.link = list.url;
-    delete list.url;
-
-    gallery = (gallery !== undefined) ? gallery : backup;
-    gallery = (gallery !== undefined) ? gallery : backup2;
-
-    gallery.link = gallery.url;
-    delete gallery.url;
-  }
+  const list = medium,
+      gallery = maxres ?? standard ?? high;
 
   return {
     videoId,
     title,
 
     thumbnails : {
-      list,
-      gallery
+      list: {
+        link: list.url,
+        width: list.width,
+        height: list.height
+      },
+
+      gallery: {
+        link: gallery.url,
+        width: gallery.width,
+        height: gallery.height
+      }
     },
 
     added,
