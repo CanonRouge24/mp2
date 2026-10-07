@@ -9,8 +9,7 @@ import
   Button,
   InputAdornment,
   TextField,
-  Toolbar,
-  Typography
+  Toolbar
 } from "@mui/material";
 
 import { NavLink } from "react-router";
@@ -38,8 +37,10 @@ function NavbarLink ({ text, isActive })
 }
 
 
-export default function Navbar ({ setSearchString })
+export default function Navbar (props)
 {
+  const { setSearchString } : function = props;
+
   return (
     <Box>
       <AppBar sx={{ position : "sticky" }}>

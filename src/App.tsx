@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-
 import { Box } from "@mui/material";
 
 import { BrowserRouter, Routes, Route } from "react-router";

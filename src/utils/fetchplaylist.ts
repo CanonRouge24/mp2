@@ -35,7 +35,7 @@ const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY,
 
 let pending : Promise<Video[]> | null = null;
 
-function loadPlaylistData () : Promise<Video>
+function loadPlaylistData () : Promise<Video[]>
 {
   if (pending !== null)
   {
@@ -52,7 +52,7 @@ function loadPlaylistData () : Promise<Video>
   return pending;
 }
 
-async function fetchPlaylistData () : Video[]
+async function fetchPlaylistData () : Promise<Video[]>
 {
   // Check if in cache
   const cached = getCachedData<Video[]>(CACHE_KEY);
@@ -87,7 +87,7 @@ async function fetchPlaylistData () : Video[]
             // Extract the individual video ids and create the batch call URL
             idQueryParameters = items.map(
               video => `&id=${video.videoId}`
-            ).join``,
+            ).join(""),
 
             videoURL = BATCH_VIDEO_BASE_URL + idQueryParameters,
             { data : videoResponse } = await axios.get<VideoItemsResponse>(videoURL);
@@ -154,7 +154,7 @@ async function fetchPlaylistData () : Video[]
 
   console.log("Fetched!");
 
-  return videos;
+  return videosArray;
 }
 
 export default loadPlaylistData;

@@ -21,7 +21,7 @@ function getViewStatistics (videos : Video[]) : Record<string, number>
 
   // Sort by views
   const sorted = videos.slice().sort(
-    (a, b) => a.viewCount - b.viewCount
+    (a, b) => (a.viewCount ?? 0) - (b.viewCount ?? 0)
   );
 
   const { length } = sorted,
@@ -67,7 +67,7 @@ function getLatest (videos : Video[]) : Date
 const channelNames : string[] = [];
 let uniqueChannels : number | undefined = undefined;
 
-function computeUniqueChannels (videos: Video[]) : null
+function computeUniqueChannels (videos: Video[]) : void
 {
   const channels = new Set();
 
@@ -97,7 +97,7 @@ function getUniqueChannels (videos : Video[]) : number
   return uniqueChannels;
 }
 
-function getUniqueChannelNames () : string[]
+function getUniqueChannelNames (videos : Video[]) : string[]
 {
   if (channelNames.length !== 0)
   {

@@ -2,7 +2,7 @@ import { useParams } from "react-router";
 
 import {
   Button,
-  Card, CardContent, CardMedia,
+  Card, CardContent,
   Container,
   Divider,
   Stack, Typography
@@ -15,8 +15,10 @@ import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRound
 
 // TODO: style to prevent buttons overlapping video
 
-export default function VideoPage ({ videos })
+export default function VideoPage (props)
 {
+  const { videos } : Video[] = props
+
   if (videos === null) return;
 
   const { length } = videos;
@@ -57,8 +59,10 @@ export default function VideoPage ({ videos })
   );
 }
 
-function VideoEmbed ({ video })
+function VideoEmbed (props)
 {
+  const { video } : Video = props;
+
   return (
     <iframe
       style={{ width: "100%", aspectRatio: "16/9", border: "none" }}
@@ -70,8 +74,12 @@ function VideoEmbed ({ video })
   );
 }
 
-function NextPrevButton ({ id, isNext, enabled })
+function NextPrevButton (props)
 {
+  const { id } : number = props,
+        { isNext } : boolean = props,
+        { enabled } : boolean = props;
+
   const target = id + (isNext << 1) - 1,
         icon = (isNext) ?
           <ArrowForwardIosRoundedIcon/>

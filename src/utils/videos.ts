@@ -186,6 +186,8 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
   {
     const responseItem = map.get(video.videoId);
 
+    if (!responseItem) continue;
+
     // Missing video
     if (isUnavailable(video))
     {
@@ -205,5 +207,5 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
 }
 
 
-export type { PlaylistItemsResponse, Video, VideoItemsResponse };
+export type { PlaylistItemsResponse, Video, VideoItemsResponse, VideoRawItem };
 export { convertPlaylistItemToVideo, augmentVideoStatistics, isUnavailable };
