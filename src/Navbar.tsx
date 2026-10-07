@@ -16,32 +16,6 @@ import
 import { NavLink } from "react-router";
 
 
-interface NavbarLinkProps {
-  text: string;
-  isActive : boolean;
-}
-
-function NavbarLink ({ text, isActive } : NavbarLinkProps)
-{
-  const NORMAL_STYLE = {
-    bgcolor: "primary.normal",
-    color: "white"
-  },
-
-  ACTIVE_STYLE = {
-    bgcolor: "primary.light",
-    color: "white"
-  },
-
-  style = (isActive) ? ACTIVE_STYLE : NORMAL_STYLE;
-
-  return (
-    <Button key={text} variant="text" sx={style}>
-    {text}
-    </Button>
-  );
-}
-
 
 interface NavbarProps {
   setSearchString : Function;
@@ -70,7 +44,6 @@ export default function Navbar ({ setSearchString } : NavbarProps)
     },
     [ requestedSearchString ]
   );
-
 
   return (
     <Box>
@@ -139,5 +112,32 @@ export default function Navbar ({ setSearchString } : NavbarProps)
         </Toolbar>
       </AppBar>
     </Box>
+  );
+}
+
+
+interface NavbarLinkProps {
+  text: string;
+  isActive : boolean;
+}
+
+function NavbarLink ({ text, isActive } : NavbarLinkProps)
+{
+  const NORMAL_STYLE = {
+    bgcolor: "primary.normal",
+    color: "white"
+  },
+
+  ACTIVE_STYLE = {
+    bgcolor: "primary.light",
+    color: "white"
+  },
+
+  style = (isActive) ? ACTIVE_STYLE : NORMAL_STYLE;
+
+  return (
+    <Button key={text} variant="text" sx={style}>
+    {text}
+    </Button>
   );
 }

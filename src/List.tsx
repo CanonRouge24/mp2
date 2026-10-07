@@ -8,6 +8,9 @@ import {
   type GridColDef
 } from "@mui/x-data-grid";
 
+import { createTheme } from "@mui/material/styles";
+import type {}  from "@mui/x-data-grid/themeAugmentation";
+
 import {
   NavLink
 } from "react-router";
@@ -34,15 +37,37 @@ const COLUMNS : GridColDef[] = [
         </NavLink>
       );
     },
-    headerAlign: "center"
+    headerAlign: "center",
+    sortable: false
   },
   { field: "title", headerName: "Name", width: 480, align: "center", headerAlign: "center" },
   { field: "author", headerName: "By", width: 160, align: "center", headerAlign: "center" },
-  { field: "views", headerName: "Views", width: 100, [ignore]: ignoreFn, align: "right", headerAlign: "center" },
+  {
+    field: "views",
+    headerName: "Views",
+    width: 100,
+    [ignore]: ignoreFn,
+    align: "right",
+    headerAlign: "center",
+    valueFormatter: views => views.toLocaleString()
+  },
   { field: "published", headerName: "Uploaded", width: 100, type: "date", align: "right", headerAlign: "center" },
   { field: "added", headerName: "Discovered", width: 100, type: "date", align: "right", headerAlign: "center" }
 ];
 
+
+const theme = createTheme({
+  palette: {
+    DataGrid: {
+      // Container background
+      bg: '#f8fafc',
+      // Pinned rows and columns background
+      pinnedBg: '#f1f5f9',
+      // Column header background
+      headerBg: '#eaeff5',
+    },
+  },
+});
 
 interface ListProps {
   videos : Video[] | null;
@@ -58,31 +83,32 @@ export default function List ({ videos, searchString } : ListProps)
     {
       return {
         id: video.index,
-        // videoId: video.videoId,
         thumbnail: video.thumbnails.list.link,
         title: video.title,
         author: video.channelTitle,
         views: +(video.viewCount ?? 0),
         published: new Date(video.published ?? ""),
         added: new Date(video.added)
-
       };
     }
   );
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "25%", maxHeight: "100%" }}>
-      <DataGrid
-        rows={ rows } rowHeight={ 180 }
-        columns={ COLUMNS }
-        columnVisibilityModel={{ author: true }}
-        filterModel={
-          {
-            items: [],
-            quickFilterValues: searchString.trim() === "" ? [] : [searchString]
+    <Container>
+      <Box sx={{ display: "flex", flexDirection: "column", minHeight: "25%", maxHeight: "100%" }}>
+        <DataGrid
+          rows={ rows } rowHeight={ 180 }
+          columns={ COLUMNS }
+          columnVisibilityModel={{ author: false }}
+          disableColumnMenu={ true }
+          filterModel={
+            {
+              items: [],
+              quickFilterValues: searchString.trim() === "" ? [] : [searchString]
+            }
           }
-        }
-      />
-    </Box>
+        />
+      </Box>
+    </Container>
   );
 }

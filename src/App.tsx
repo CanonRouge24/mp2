@@ -38,7 +38,7 @@ function App()
           <Routes>
             <Route index element={<Home videos={ videos }/>}/>
             <Route path="list" element={<List videos={ videos } searchString={ searchString }/>}/>
-            <Route path="gallery" element={<Gallery videos={ videos } searchString={ searchString }/>}/>
+            <Route path="gallery" element={<Gallery videos={ videos } searchString={ searchString } setSearchString={ setSearchString }/>}/>
             <Route path="video/:id" element={<VideoPage videos={ videos }/>}/>
           </Routes>
         </Box>
