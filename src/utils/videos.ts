@@ -69,7 +69,7 @@ interface Video
   videoId : string;      // watch?v={videoId}
   title : string;        // video title
 
-  thumbnails : {          // Links to two different sizes of the thumbnail
+  thumbnails : {         // Links to two different sizes of the thumbnail
     list : {
       link : string;
       width : number;
@@ -83,8 +83,8 @@ interface Video
     };
   };
 
-  added : Date;          // Date added to the playlist
-  published? : Date;     // Date uploaded to Youtube (needs videos.list endpoint instead)
+  added : string;        // Date added to the playlist
+  published? : string    // Date uploaded to Youtube (needs videos.list endpoint instead)
 
   viewCount? : string;   // Viewcount when requested (needs videos.list endpoint instead)
 
@@ -104,10 +104,10 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
     title,
 
     thumbnails : {
-      medium : list,
-      maxres : gallery,
-      standard : backup,
-      high : backup2
+      medium : list,     // 320x180
+      maxres : gallery,  // 1280x720
+      standard : backup, // 640x480
+      high : backup2     // 480x360
     },
 
     publishedAt : added,
@@ -117,8 +117,6 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
     videoOwnerChannelId : channelId,
     videoOwnerChannelTitle : channelTitle
   } = item.snippet;
-
-  added = new Date(added);
 
   if (title !== "Private video" && title !== "Deleted video")
   {
@@ -171,8 +169,6 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
             viewCount
           }
         } = videoRawItem;
-
-        published = new Date(published);
 
         return [
           videoId,

@@ -64,7 +64,25 @@ function getLatest (videos : Video[]) : Date
   return latest;
 }
 
+const channelNames : string[] = [];
 let uniqueChannels : number | undefined = undefined;
+
+function computeUniqueChannels (videos: Video[]) : null
+{
+  const channels = new Set();
+
+  for (const video of videos)
+  {
+    if (!channels.has(video.channelId))
+    {
+      channelNames.push(video.channelTitle);
+    }
+
+    channels.add(video.channelId);
+  }
+
+  uniqueChannels = channels.size;
+}
 
 function getUniqueChannels (videos : Video[]) : number
 {
@@ -73,16 +91,23 @@ function getUniqueChannels (videos : Video[]) : number
     return uniqueChannels;
   }
 
-  const channels = new Set();
-
-  for (const video of videos)
-  {
-    channels.add(video.channelId);
-  }
-
-  uniqueChannels = channels.size;
+  // Else
+  computeUniqueChannels(videos);
 
   return uniqueChannels;
 }
 
-export { getLatest, getUniqueChannels, getViewStatistics };
+function getUniqueChannelNames () : string[]
+{
+  if (channelNames.length !== 0)
+  {
+    return channelNames;
+  }
+
+  // Else
+  computeUniqueChannels(videos);
+
+  return channelNames;
+}
+
+export { getLatest, getUniqueChannels, getUniqueChannelNames, getViewStatistics };
