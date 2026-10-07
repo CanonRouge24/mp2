@@ -1,4 +1,5 @@
-import * as React from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
+
 
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -48,6 +49,29 @@ interface NavbarProps {
 
 export default function Navbar ({ setSearchString } : NavbarProps)
 {
+  const [requestedSearchString, setRequestedSearchString] = useState("");
+
+  // Debounce the search string to wait 500ms after all inputs
+  useEffect(
+    () =>
+    {
+      const debounceTimer = setTimeout(
+        () =>
+        {
+          setSearchString(requestedSearchString);
+        },
+        500
+      );
+
+      return () =>
+      {
+        clearTimeout(debounceTimer);
+      };
+    },
+    [ requestedSearchString ]
+  );
+
+
   return (
     <Box>
       <AppBar sx={{ position : "sticky" }}>
@@ -93,8 +117,8 @@ export default function Navbar ({ setSearchString } : NavbarProps)
               })
             }
             onChange={
-              (event : React.ChangeEvent<HTMLInputElement>) => {
-                setSearchString(event.target.value);
+              (event : ChangeEvent<HTMLInputElement>) => {
+                setRequestedSearchString(event.target.value);
               }
             }
             variant="filled"
