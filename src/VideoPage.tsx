@@ -13,6 +13,8 @@ import { NavLink } from "react-router";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 
+// TODO: style to prevent buttons overlapping video
+
 export default function VideoPage ({ videos })
 {
   if (videos === null) return;
@@ -26,9 +28,7 @@ export default function VideoPage ({ videos })
 
   return (
     <Container sx={{ display: "flex", alignItems: "center" }}>
-      <NavLink to={`/video/${((id - 1) < 0) ? 0 : id - 1}`} sx={{ position: "fixed", top: "50%" }}>
-        <NextPrevButton id={ id } isNext={ false } enabled={ (id > 0) }/>
-      </NavLink>
+      <NextPrevButton id={ id } isNext={ false } enabled={ (id > 0) }/>
 
       <Container sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         <VideoEmbed video={ video }/>
@@ -52,9 +52,7 @@ export default function VideoPage ({ videos })
         </Card>
       </Container>
 
-      <NavLink to={`/video/${((id + 1) === length) ? length - 1 : id + 1}`} sx={{ position: "fixed", top: "50%" }}>
-        <NextPrevButton id={ id } isNext={ true } enabled={ (id < length) }/>
-      </NavLink>
+      <NextPrevButton id={ id } isNext={ true } enabled={ (id < length) }/>
     </Container>
   );
 }
@@ -93,17 +91,16 @@ function NextPrevButton ({ id, isNext, enabled })
 
 
   return (
-    <NavLink to={`/video/${target}`}>
-      {
-        (enabled) ?
-          <Button key={key} variant="contained" size="large" color="secondary" sx={ style }>
-            {icon}
-          </Button>
-          :
-          <Button key={key} variant="contained" size="large" sx={ style } disabled>
-            {icon}
-          </Button>
-      }
-    </NavLink>
+    <Button
+      key={key}
+      component={(enabled) ? NavLink : "button"}
+      {...((enabled) ? { to: `/video/${target}` } : {})}
+      variant="contained"
+      size="large"
+      disabled={!enabled}
+      sx={ style }
+    >
+      {icon}
+    </Button>
   );
 }
