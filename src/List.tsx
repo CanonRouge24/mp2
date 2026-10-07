@@ -33,12 +33,14 @@ const COLUMNS : GridColDef[] = [
           />
         </NavLink>
       );
-    }
+    },
+    headerAlign: "center"
   },
-  { field: "title", headerName: "Name", width: 480 },
-  { field: "views", headerName: "Views", width: 100, [ignore]: ignoreFn },
-  { field: "published", headerName: "Uploaded", width: 100, type: "date" },
-  { field: "added", headerName: "Discovered", width: 100, type: "date" }
+  { field: "title", headerName: "Name", width: 480, align: "center", headerAlign: "center" },
+  { field: "author", headerName: "By", width: 160, align: "center", headerAlign: "center" },
+  { field: "views", headerName: "Views", width: 100, [ignore]: ignoreFn, align: "right", headerAlign: "center" },
+  { field: "published", headerName: "Uploaded", width: 100, type: "date", align: "right", headerAlign: "center" },
+  { field: "added", headerName: "Discovered", width: 100, type: "date", align: "right", headerAlign: "center" }
 ];
 
 
@@ -59,27 +61,28 @@ export default function List ({ videos, searchString } : ListProps)
         // videoId: video.videoId,
         thumbnail: video.thumbnails.list.link,
         title: video.title,
+        author: video.channelTitle,
         views: +(video.viewCount ?? 0),
         published: new Date(video.published ?? ""),
         added: new Date(video.added)
+
       };
     }
   );
 
   return (
-    <Container>
-      <Box sx={{ display: "flex", flexDirection: "column", minHeight: "25%", maxHeight: "100%" }}>
-        <DataGrid
-          rows={ rows } rowHeight={ 180 }
-          columns={ COLUMNS }
-          filterModel={
-            {
-              items: [],
-              quickFilterValues: searchString.trim() === "" ? [] : [searchString]
-            }
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "25%", maxHeight: "100%" }}>
+      <DataGrid
+        rows={ rows } rowHeight={ 180 }
+        columns={ COLUMNS }
+        columnVisibilityModel={{ author: true }}
+        filterModel={
+          {
+            items: [],
+            quickFilterValues: searchString.trim() === "" ? [] : [searchString]
           }
-        />
-      </Box>
-    </Container>
+        }
+      />
+    </Box>
   );
 }
