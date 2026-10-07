@@ -4,8 +4,8 @@ import type {
   PlaylistItemsResponse,
   Video,
   VideoItemsResponse,
-  VideoRawItem
 } from "./videos.ts";
+
 import {
   augmentVideoStatistics,
   convertPlaylistItemToVideo,
@@ -14,7 +14,7 @@ import {
 
 import { setCachedData, getCachedData } from "./localstorage.ts";
 
-import { notes, updateNotes } from "../assets/notes.ts";
+import { /* notes, */ updateNotes } from "../assets/notes.ts";
 
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY,
 
@@ -75,7 +75,7 @@ async function fetchPlaylistData () : Promise<Video[]>
   {
     const PLAYLIST_ID_URL = PLAYLIST_BASE_URL + `&playlistId=${ID}`;
 
-    let playlistResponse : PlaylistItemsResponse = null,
+    let playlistResponse : PlaylistItemsResponse | null = null,
         playlistURL = PLAYLIST_ID_URL;
 
     do
@@ -116,13 +116,13 @@ async function fetchPlaylistData () : Promise<Video[]>
         {
           const previous = videos.get(videoId);
 
-          if (video.added >= previous.added)
+          if (video.added >= (previous?.added ?? new Date(0)))
           {
             continue;
           }
 
           // Else, replace index with previous one
-          video.index = previous.index;
+          video.index = (previous?.index ?? 0);
         }
 
         // Else, replace/add to videos
@@ -154,7 +154,7 @@ async function fetchPlaylistData () : Promise<Video[]>
 
   console.log("Fetched!");
 
-  return videosArray;
+  return videoArray;
 }
 
 export default loadPlaylistData;

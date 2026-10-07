@@ -21,7 +21,7 @@ function getViewStatistics (videos : Video[]) : Record<string, number>
 
   // Sort by views
   const sorted = videos.slice().sort(
-    (a, b) => (a.viewCount ?? 0) - (b.viewCount ?? 0)
+    (a, b) => +(a.viewCount ?? 0) - +(b.viewCount ?? 0)
   );
 
   const { length } = sorted,
@@ -29,15 +29,15 @@ function getViewStatistics (videos : Video[]) : Record<string, number>
         firstQuartile = length / 4,
         thirdQuartile = 3 * length / 4;
 
-  viewStatistics.min = +sorted[0].viewCount;
-  viewStatistics.max = +sorted[length - 1].viewCount;
-  viewStatistics.median = (+sorted[Math.floor(median)].viewCount + +sorted[Math.ceil(median)].viewCount) / 2;
-  viewStatistics["25"] = (+sorted[Math.floor(firstQuartile)].viewCount + +sorted[Math.ceil(firstQuartile)].viewCount) / 2;
-  viewStatistics["75"] = (+sorted[Math.floor(thirdQuartile)].viewCount + +sorted[Math.ceil(thirdQuartile)].viewCount) / 2;
+  viewStatistics.min = +(sorted[0].viewCount ?? 0);
+  viewStatistics.max = +(sorted[length - 1].viewCount ?? 0);
+  viewStatistics.median = (+(sorted[Math.floor(median)].viewCount ?? 0) + +(sorted[Math.ceil(median)].viewCount ?? 0)) / 2;
+  viewStatistics["25"] = (+(sorted[Math.floor(firstQuartile)].viewCount ?? 0) + +(sorted[Math.ceil(firstQuartile)].viewCount ?? 0)) / 2;
+  viewStatistics["75"] = (+(sorted[Math.floor(thirdQuartile)].viewCount ?? 0) + +(sorted[Math.ceil(thirdQuartile)].viewCount ?? 0)) / 2;
 
   const sum = sorted.reduce(
     (total, video) => {
-      return total + +video.viewCount;
+      return total + +(video.viewCount ?? 0);
     },
     0
   );
@@ -65,7 +65,7 @@ function getLatest (videos : Video[]) : Date
 }
 
 const channelNames : string[] = [];
-let uniqueChannels : number | undefined = undefined;
+let uniqueChannels : number | undefined = 0;
 
 function computeUniqueChannels (videos: Video[]) : void
 {
@@ -94,7 +94,7 @@ function getUniqueChannels (videos : Video[]) : number
   // Else
   computeUniqueChannels(videos);
 
-  return uniqueChannels;
+  return (uniqueChannels ?? 0);
 }
 
 function getUniqueChannelNames (videos : Video[]) : string[]
