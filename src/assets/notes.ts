@@ -1,4 +1,4 @@
-import type Video from "../utils/videos.ts";
+import type { Video } from "../utils/videos.ts";
 
 const videoNotes : Record<string, string> = {
   // DEMONDICE
