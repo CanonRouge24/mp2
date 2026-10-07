@@ -70,6 +70,7 @@ function VideoStatistics ({ videos })
         {channels}
         {latest}
       </Typography>
+      <Divider variant="middle" sx={{ my: "1rem" }}/>
       <ViewStack videos={ videos }/>
     </>
   );
