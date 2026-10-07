@@ -11,11 +11,13 @@ import List from "./List.tsx";
 import Gallery from "./Gallery.tsx";
 import VideoPage from "./VideoPage.tsx";
 
+import type { Video } from "./utils/videos.ts";
+
 import loadPlaylistData from "./utils/fetchplaylist.ts";
 
 function App()
 {
-  const [videos, setVideos] = useState(null),
+  const [videos, setVideos] = useState<Video[] | null>(null),
         [searchString, setSearchString] = useState("");
 
   useEffect(

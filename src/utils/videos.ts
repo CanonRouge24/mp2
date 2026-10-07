@@ -97,7 +97,7 @@ interface Video
 }
 
 interface VideoProps {
-  videos : Video[];
+  videos : Video[] | null;
 }
 
 
