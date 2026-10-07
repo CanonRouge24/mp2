@@ -8,7 +8,6 @@ import {
   type GridColDef
 } from "@mui/x-data-grid";
 
-import { createTheme } from "@mui/material/styles";
 import type {}  from "@mui/x-data-grid/themeAugmentation";
 
 import {
@@ -49,25 +48,12 @@ const COLUMNS : GridColDef[] = [
     [ignore]: ignoreFn,
     align: "right",
     headerAlign: "center",
-    valueFormatter: views => views.toLocaleString()
+    valueFormatter: (views : number) => views.toLocaleString()
   },
   { field: "published", headerName: "Uploaded", width: 100, type: "date", align: "right", headerAlign: "center" },
   { field: "added", headerName: "Discovered", width: 100, type: "date", align: "right", headerAlign: "center" }
 ];
 
-
-const theme = createTheme({
-  palette: {
-    DataGrid: {
-      // Container background
-      bg: '#f8fafc',
-      // Pinned rows and columns background
-      pinnedBg: '#f1f5f9',
-      // Column header background
-      headerBg: '#eaeff5',
-    },
-  },
-});
 
 interface ListProps {
   videos : Video[] | null;
