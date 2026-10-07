@@ -12,6 +12,8 @@ import {
   NavLink
 } from "react-router";
 
+import type { Video } from "./utils/videos.ts";
+
 
 const ignore = "getApplyQuickFilterFn",
       ignoreFn = () => null,
@@ -48,7 +50,13 @@ const COLUMNS : GridColDef[] = [
   { field: "added", headerName: "Discovered", width: 100, type: "date" }
 ];
 
-export default function List ({ videos, searchString })
+
+interface ListProps {
+  videos : Video[];
+  searchString : string;
+}
+
+export default function List ({ videos, searchString } : ListProps)
 {
   if (videos === null) return;
 

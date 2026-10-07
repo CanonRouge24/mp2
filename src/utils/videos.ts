@@ -96,6 +96,10 @@ interface Video
   note? : string;
 }
 
+interface VideoProps {
+  videos : Video[];
+}
+
 
 function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
 {
@@ -207,5 +211,5 @@ function augmentVideoStatistics (videos : Video[], response : VideoItemsResponse
 }
 
 
-export type { PlaylistItemsResponse, Video, VideoItemsResponse, VideoRawItem };
+export type { PlaylistItemsResponse, Video, VideoItemsResponse, VideoRawItem, VideoProps };
 export { convertPlaylistItemToVideo, augmentVideoStatistics, isUnavailable };
