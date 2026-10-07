@@ -3,7 +3,7 @@ import
   Box, Chip, Container, Divider, Paper, Stack, Typography
 } from "@mui/material";
 
-import type Video from "./utils/videos.ts";
+import type { Video, VideoProps } from "./utils/videos.ts";
 
 import { getLatest, getUniqueChannels, getViewStatistics } from "./utils/statistics.ts";
 
@@ -17,10 +17,8 @@ const Center = {
   justifyContent: "center"
 };
 
-export default function Home (props)
+export default function Home ({ videos } : VideoProps)
 {
-  const { videos } : Video[] = props;
-
   return (
     <>
       <Box sx={Center}>
@@ -30,10 +28,8 @@ export default function Home (props)
   );
 }
 
-function WelcomeCard (props)
+function WelcomeCard ({ videos } : VideoProps)
 {
-  const { videos } : Video[] = props;
-
   return (
     <Paper elevation="3" sx={{ width: "75%" }}>
       <Box sx={{ width: "100%", padding: "1rem" }}>
@@ -49,10 +45,8 @@ function WelcomeCard (props)
   );
 }
 
-function VideoStatistics (props)
+function VideoStatistics ({ videos } : VideoProps)
 {
-  const { videos } : Video[] = props;
-
   let videoStatistics = (
     <Typography align="center" component="h2" variant="h4" sx={{ textDecoration: "underline" }} gutterBottom>
       Video Statistics
@@ -81,10 +75,8 @@ function VideoStatistics (props)
   );
 }
 
-function ViewStack (props)
+function ViewStack ({ videos } : VideoProps)
 {
-  const { videos } : Video[] = props;
-
   let statistics : Record<string, number> | null = null;
 
   if (videos !== null)

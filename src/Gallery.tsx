@@ -1,8 +1,9 @@
 import * as React from "react";
 
-export default function Gallery (props)
+import { Video, VideoProps } from "./utils/videos.ts";
+
+export default function Gallery ({ videos } : VideoProps)
 {
-  const { videos } : Video[] = props;
 
   return (
     <>
