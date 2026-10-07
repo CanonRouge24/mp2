@@ -31,7 +31,7 @@ export default function Home ({ videos } : VideoProps)
 function WelcomeCard ({ videos } : VideoProps)
 {
   return (
-    <Paper elevation="3" sx={{ width: "75%" }}>
+    <Paper elevation={3} sx={{ width: "75%" }}>
       <Box sx={{ width: "100%", padding: "1rem" }}>
         <Typography align="center" component="h1" variant="h3">
           {

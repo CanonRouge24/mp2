@@ -23,10 +23,8 @@ export default function VideoPage ({ videos } : VideoProps)
 
   const { length } = videos;
 
-  const id = +(useParams().id),
+  const id = +(useParams().id ?? 0),
         video = videos[+id];
-
-  const { thumbnails: { gallery : thumbnail } } = video;
 
   return (
     <Container sx={{ display: "flex", alignItems: "center" }}>
@@ -47,8 +45,8 @@ export default function VideoPage ({ videos } : VideoProps)
             </Stack>
             <Typography component="p" variant="h6" sx={{ whiteSpace: "pre" }}>
               {`Created By:`} <a href={`https://youtube.com/channel/${video.channelId}`}>{video.channelTitle}</a>
-              {`\nPublished: ${new Date(video.published).toLocaleString().split`, `[0]}`}
-              {`\nAdded: ${new Date(video.added).toLocaleString().split`, `[0]}`}
+              {`\nPublished: ${new Date(video.published ?? "").toLocaleString().split(", ")[0]}`}
+              {`\nAdded: ${new Date(video.added).toLocaleString().split(", ")[0]}`}
             </Typography>
           </CardContent>
         </Card>
@@ -84,7 +82,7 @@ interface NextPrevButtonProps {
 
 function NextPrevButton ({ id, isNext, enabled } : NextPrevButtonProps)
 {
-  const target = id + (isNext << 1) - 1,
+  const target = id + (+isNext << 1) - 1,
         icon = (isNext) ?
           <ArrowForwardIosRoundedIcon/>
           :

@@ -59,8 +59,8 @@ export default function List ({ videos, searchString } : ListProps)
         // videoId: video.videoId,
         thumbnail: video.thumbnails.list.link,
         title: video.title,
-        views: +video.viewCount ?? 0,
-        published: new Date(video.published),
+        views: +(video.viewCount ?? 0),
+        published: new Date(video.published ?? ""),
         added: new Date(video.added)
       };
     }
