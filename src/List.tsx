@@ -43,7 +43,7 @@ const COLUMNS : GridColDef[] = [
 
 
 interface ListProps {
-  videos : Video[];
+  videos : Video[] | null;
   searchString : string;
 }
 

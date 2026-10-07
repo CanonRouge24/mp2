@@ -15,7 +15,12 @@ import
 import { NavLink } from "react-router";
 
 
-function NavbarLink ({ text, isActive })
+interface NavbarLinkProps {
+  text: string;
+  isActive : boolean;
+}
+
+function NavbarLink ({ text, isActive } : NavbarLinkProps)
 {
   const NORMAL_STYLE = {
     bgcolor: "primary.normal",
