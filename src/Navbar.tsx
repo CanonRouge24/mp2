@@ -42,10 +42,12 @@ function NavbarLink ({ text, isActive } : NavbarLinkProps)
 }
 
 
-export default function Navbar (props)
-{
-  const { setSearchString } : function = props;
+interface NavbarProps {
+  setSearchString : Function;
+}
 
+export default function Navbar ({ setSearchString } : NavbarProps)
+{
   return (
     <Box>
       <AppBar sx={{ position : "sticky" }}>

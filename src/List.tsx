@@ -52,14 +52,14 @@ export default function List ({ videos, searchString } : ListProps)
   if (videos === null) return;
 
   const rows : GridRowsProp = videos.map(
-    video =>
+    (video : Video) =>
     {
       return {
         id: video.index,
         // videoId: video.videoId,
         thumbnail: video.thumbnails.list.link,
         title: video.title,
-        views: +video.viewCount,
+        views: +video.viewCount ?? 0,
         published: new Date(video.published),
         added: new Date(video.added)
       };

@@ -3,7 +3,7 @@ import
   Box, Chip, Container, Divider, Paper, Stack, Typography
 } from "@mui/material";
 
-import type { Video, VideoProps } from "./utils/videos.ts";
+import type { VideoProps } from "./utils/videos.ts";
 
 import { getLatest, getUniqueChannels, getViewStatistics } from "./utils/statistics.ts";
 
