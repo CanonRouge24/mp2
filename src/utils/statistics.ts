@@ -65,7 +65,7 @@ function getLatest (videos : Video[]) : Date
 }
 
 const channelNames : string[] = [];
-let uniqueChannels : number | undefined = 0;
+let uniqueChannels : number | undefined = undefined;
 
 function computeUniqueChannels (videos: Video[]) : void
 {
@@ -82,6 +82,7 @@ function computeUniqueChannels (videos: Video[]) : void
   }
 
   uniqueChannels = channels.size;
+  console.log(uniqueChannels);
 }
 
 function getUniqueChannels (videos : Video[]) : number
