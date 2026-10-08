@@ -3,7 +3,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 import { Box } from "@mui/material";
 
-import { BrowserRouter, Routes, Route } from "react-router";
+import { HashRouter, Routes, Route } from "react-router";
 
 import Navbar from "./Navbar.tsx";
 import Home from "./Home.tsx";
@@ -31,7 +31,7 @@ function App()
   return (
     <>
       <CssBaseline enableColorScheme/>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <HashRouter basename={"/"}>
         <Box sx={{ width: "100%", height: "100vh", display: "flex", flexDirection: "column" }}>
           <Navbar setSearchString={ setSearchString }/>
 
@@ -42,7 +42,7 @@ function App()
             <Route path="video/:id" element={<VideoPage videos={ videos }/>}/>
           </Routes>
         </Box>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }
