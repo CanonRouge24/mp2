@@ -137,15 +137,15 @@ function convertPlaylistItemToVideo (item : PlaylistRawItem) : Video
 
     thumbnails : {
       list: {
-        link: list.url,
-        width: list.width,
-        height: list.height
+        link: list?.url,
+        width: list?.width,
+        height: list?.height
       },
 
       gallery: {
-        link: gallery.url,
-        width: gallery.width,
-        height: gallery.height
+        link: gallery?.url,
+        width: gallery?.width,
+        height: gallery?.height
       }
     },
 
